@@ -1,4 +1,4 @@
-# weather-medallion01 — Ultra-Cheap Azure Data Pipeline (ADF + ADLS Gen2 + Databricks, No SQL)
+# Weather — Ultra-Cheap Azure Data Pipeline (ADF + ADLS Gen2 + Databricks, No SQL)
 
 A tiny, portfolio-ready **Azure-only** data engineering project that ingests **free public weather data** from **Open-Meteo** (no API key), lands it in **ADLS Gen2**, and transforms it using **Databricks notebooks** following **Medallion architecture (Bronze/Silver/Gold)**. Orchestrated end-to-end with **Azure Data Factory**.
 
@@ -72,26 +72,22 @@ weather-medallion01/
 ## 5) Medallion layers and storage layout
 
 ### Bronze (raw)
-- Store the raw API payload as JSON files:
+- Store the raw API payload as JSON files
+   - `abfss://bronze@<storage>.dfs.core.windows.net/open_meteo/archive/dt=YYYY-MM-DD/city=<city>/payload.json`
 
-`abfss://bronze@<storage>.dfs.core.windows.net/open_meteo/archive/dt=YYYY-MM-DD/city=<city>/payload.json`
-
-- Also write a Bronze Delta dataset (append-only):
-
-`abfss://bronze@<storage>.dfs.core.windows.net/delta/open_meteo_hourly_bronze/`
+- Also write a Bronze Delta dataset (append-only)
+   - `abfss://bronze@<storage>.dfs.core.windows.net/delta/open_meteo_hourly_bronze/`
 
 ### Silver (clean/flat)
 - One row per **city + hour**
 - Flatten nested JSON arrays into tabular columns
 - Enforce data types and minimal quality rules
-
-`abfss://silver@<storage>.dfs.core.windows.net/delta/open_meteo_hourly_silver/`
+  - `abfss://silver@<storage>.dfs.core.windows.net/delta/open_meteo_hourly_silver/`
 
 ### Gold (analytics-ready)
 - One row per **city + date**
 - Daily KPIs and derived metrics
-
-`abfss://gold@<storage>.dfs.core.windows.net/delta/open_meteo_city_daily_gold/`
+  - `abfss://gold@<storage>.dfs.core.windows.net/delta/open_meteo_city_daily_gold/`
 
 ---
 
